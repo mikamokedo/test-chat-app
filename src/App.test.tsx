@@ -13,9 +13,7 @@ test('renders learn react link', () => {
 
 
 test("getFirstChar", () =>{
-
   expect(getFirstChar("Quy")).toEqual("Q")
   expect(getFirstChar("   Quy")).toEqual("Q")
   expect(getFirstChar("123Quy")).toEqual("1")
-
 })

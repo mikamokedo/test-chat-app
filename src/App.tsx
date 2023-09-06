@@ -15,6 +15,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { PAGE_SIZE } from "./lib/const";
+import { useKeyPress } from "./lib/useKeyPress";
 
 const delay = () => new Promise((res) => setTimeout(res, 1000));
 
@@ -32,6 +33,9 @@ function App() {
   const [currentMessages, setCurrentMessages] = useState<IMessage[]>([]);
 
   const handleSend = () => {
+    if(!input){
+      return;
+    }
     dispatch(sendMessage({ text: input, name: userName, id: uuidv4() }));
     dispatch(updateInput(""));
     setTimeout(() => {
@@ -131,6 +135,14 @@ function App() {
       return [...newMess, ...state];
     });
   }, [page]);
+
+
+  const pressed = useKeyPress('Enter');
+  useEffect(() =>{
+    if(pressed && isJoinRoom){
+      handleSend()
+    }
+  },[pressed])
 
   return (
     <>

@@ -1,5 +1,5 @@
 import React from "react";
-import {getFirstChar} from '../../lib/chat'
+import { getFirstChar } from "../../lib/chat";
 
 interface MessagePros {
   textContent: string;

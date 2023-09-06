@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "./Input";
 import SendButton from "./SendButton";
+import { useKeyPress } from "../../lib/useKeyPress";
 
 interface JoinRoomModalProps {
     handleSend: (value:string) => void;
 }
 const JoinRoomModal: React.FC<JoinRoomModalProps> = ({handleSend}) => {
   const [value, setValue] = useState("");
+  const pressed = useKeyPress('Enter');
+  useEffect(() =>{
+    if(pressed){
+      handleSend(value)
+    }
+  },[pressed])
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
