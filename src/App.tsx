@@ -1,6 +1,7 @@
 import Message from "./components/chat/Message";
 import "./App.css";
 import Input from './components/chat/Input'
+import SendButton from './components/chat/SendButton'
 
 function App() {
   return (
@@ -13,7 +14,10 @@ function App() {
       />
       <Message textContent="just a messagee" name="phu123" isSender={false} />
       </div>
+      <div className="flex bg-indigo-500 p-[20px]">
       <Input value="" onChange={() => null}/>
+      <SendButton onSend={() => null}/>
+      </div>
     </div>
   );
 }
