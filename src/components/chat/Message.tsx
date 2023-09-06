@@ -1,4 +1,5 @@
 import React from "react";
+import {getFirstChar} from '../../lib/chat'
 
 interface MessagePros {
   textContent: string;
@@ -13,7 +14,7 @@ const Message: React.FC<MessagePros> = ({ textContent, name, isSender }) => {
           isSender ? "bg-gray-300 ml-[10px] order-1" : "bg-indigo-300 mr-[10px]"
         }`}
       >
-        {name}
+        {getFirstChar(name)}
       </div>
       <div
         className={`text-sm mt-[10px] rounded-[4px] p-[10px] relative max-w-[500px] ${

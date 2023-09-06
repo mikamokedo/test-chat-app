@@ -9,7 +9,7 @@ function App() {
         name="Q"
         isSender={true}
       />
-      <Message textContent="just a messagee" name="Q" isSender={false} />
+      <Message textContent="just a messagee" name="phu123" isSender={false} />
     </div>
   );
 }
