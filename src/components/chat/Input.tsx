@@ -7,7 +7,7 @@ interface InputProps{
 }
 const Input:React.FC<InputProps> = ({value,onChange}) => {
   return (
-      <input value={value} onChange={(e) => onChange(e.target.value) } className='rounded-[10px] w-full'/>
+      <input value={value} onChange={(e) => onChange(e.target.value) } className='rounded-[10px] w-full p-[5px]'/>
   )
 }
 
