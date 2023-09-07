@@ -88,11 +88,9 @@ function App() {
 
   useEffect(() => {
     if (lassMessage.current) {
-      lassMessage.current.scrollIntoView({
-        behavior: "smooth",
-      });
+      lassMessage.current.scrollIntoView();
     }
-  }, [currentMessages.length, lassMessage, isJoinRoom]);
+  }, [isJoinRoom]);
 
   useEffect(() => {
     const handleScroll = async () => {
