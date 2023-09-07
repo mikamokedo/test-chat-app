@@ -29,11 +29,12 @@ function App() {
   const storesMessages = useSelector((state: RootState) => state.chat.messages);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [showToBottom, setShowToBottom] = useState(false);
 
   const [currentMessages, setCurrentMessages] = useState<IMessage[]>([]);
 
   const handleSend = () => {
-    if(!input){
+    if (!input) {
       return;
     }
     dispatch(sendMessage({ text: input, name: userName, id: uuidv4() }));
@@ -103,9 +104,19 @@ function App() {
 
     if (chatInner.current) {
       chatInner.current.addEventListener("scroll", (e) => {
+        if(!chatInner.current){
+          return;
+        }
         if (chatInner.current?.scrollTop === 0) {
           handleScroll();
         }
+        if(chatInner.current?.scrollTop < 400){
+          setShowToBottom(true);
+        }else{
+          setShowToBottom(false);
+
+        }
+
       });
     }
     return () => {
@@ -134,20 +145,25 @@ function App() {
     });
   }, [page]);
 
-
-  const pressed = useKeyPress('Enter');
-  useEffect(() =>{
-    if(pressed && isJoinRoom){
-      handleSend()
+  const pressed = useKeyPress("Enter");
+  useEffect(() => {
+    if (pressed && isJoinRoom) {
+      handleSend();
     }
-  },[pressed])
+  }, [pressed]);
+
+  const scrollToBottom = () => {
+    if (lassMessage.current) {
+      lassMessage.current.scrollIntoView();
+    }
+  };
 
   return (
     <>
       {!isJoinRoom ? (
         <JoinRoomModal handleSend={handleJoinRoom} />
       ) : (
-        <div className="max-w-[800px] border border-black mt-[30px] mx-[auto]">
+        <div className="max-w-[800px] border border-black mt-[30px] mx-[auto] relative">
           <div
             className=" flex flex-col gap-[10px] p-[20px]  max-h-[500px] overflow-y-scroll min-h-[500px]"
             ref={chatInner}
@@ -169,6 +185,14 @@ function App() {
             />
             <SendButton onSend={handleSend} />
           </div>
+          {showToBottom && (
+            <div
+              className="rounded-[10px] border border-indigo-300 w-[80px] text-sm text-center absolute bottom-[90px] left-[50%] cursor-pointer"
+              onClick={scrollToBottom}
+            >
+              Bottom
+            </div>
+          )}
         </div>
       )}
     </>
