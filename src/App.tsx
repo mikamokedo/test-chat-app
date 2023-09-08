@@ -62,7 +62,7 @@ function App() {
   useEffect(() => {
     const timer = setInterval(() => {
       const oldMessages = window.localStorage.getItem("messages");
-      if(!oldMessages){
+      if (!oldMessages) {
         return;
       }
       const parseMess = JSON.parse(oldMessages);
@@ -73,12 +73,21 @@ function App() {
           currentMessages[currentMessages.length - 1]?.id
       ) {
         const startIndex = parseMess.length - page * PAGE_SIZE;
+        dispatch(restoreMessage(parseMess))
         setCurrentMessages(() => {
           return parseMess.slice(Math.max(startIndex, 0));
         });
-        setTimeout(() => {
-          scrollToBottom();
-        }, 200);
+        if (!chatInner.current) {
+          return;
+        }
+        if (
+          chatInner.current.scrollHeight - chatInner.current?.scrollTop <
+          chatInner.current?.clientHeight + 300
+        ) {
+          setTimeout(() => {
+            scrollToBottom();
+          }, 200);
+        }
       }
     }, 200);
     return () => clearInterval(timer);
@@ -86,12 +95,10 @@ function App() {
 
   useEffect(() => {
     const oldMessages = window.localStorage.getItem("messages");
-    if(oldMessages){
-          const parseMess = JSON.parse(oldMessages);
+    if (oldMessages) {
+      const parseMess = JSON.parse(oldMessages);
       dispatch(restoreMessage(parseMess));
     }
-
-    
   }, [dispatch]);
 
   useEffect(() => {
@@ -115,7 +122,7 @@ function App() {
         }
         if (
           chatInner.current.scrollHeight - chatInner.current?.scrollTop >
-          chatInner.current?.clientHeight + 400
+          chatInner.current?.clientHeight + 300
         ) {
           setShowToBottom(true);
         } else {
