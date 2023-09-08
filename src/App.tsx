@@ -62,7 +62,10 @@ function App() {
   useEffect(() => {
     const timer = setInterval(() => {
       const oldMessages = window.localStorage.getItem("messages");
-      const parseMess = JSON.parse(oldMessages ?? "");
+      if(!oldMessages){
+        return;
+      }
+      const parseMess = JSON.parse(oldMessages);
       if (
         parseMess &&
         currentMessages.length &&
@@ -83,10 +86,12 @@ function App() {
 
   useEffect(() => {
     const oldMessages = window.localStorage.getItem("messages");
-    const parseMess = JSON.parse(oldMessages ?? "");
-    if (parseMess) {
+    if(oldMessages){
+          const parseMess = JSON.parse(oldMessages);
       dispatch(restoreMessage(parseMess));
     }
+
+    
   }, [dispatch]);
 
   useEffect(() => {
