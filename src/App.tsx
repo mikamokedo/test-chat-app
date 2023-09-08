@@ -147,7 +147,7 @@ function App() {
   useEffect(() => {
     const startIndex = storesMessages.length - page * PAGE_SIZE;
     setCurrentMessages((state) => {
-      return [...storesMessages.slice(startIndex, startIndex + PAGE_SIZE),...state];
+      return storesMessages.slice(startIndex)
     });
   }, [page, storesMessages]);
 
