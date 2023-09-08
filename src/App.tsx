@@ -75,7 +75,7 @@ function App() {
         const startIndex = parseMess.length - page * PAGE_SIZE;
         dispatch(restoreMessage(parseMess))
         setCurrentMessages(() => {
-          return parseMess.slice(Math.max(startIndex, 0));
+          return parseMess.slice(startIndex);
         });
         if (!chatInner.current) {
           return;
@@ -117,7 +117,7 @@ function App() {
         if (!chatInner.current) {
           return;
         }
-        if (chatInner.current?.scrollTop === 0) {
+        if (chatInner.current?.scrollTop <= 100) {
           handleScroll();
         }
         if (
@@ -146,8 +146,8 @@ function App() {
 
   useEffect(() => {
     const startIndex = storesMessages.length - page * PAGE_SIZE;
-    setCurrentMessages(() => {
-      return storesMessages.slice(Math.max(startIndex, 0));
+    setCurrentMessages((state) => {
+      return [...storesMessages.slice(startIndex, startIndex + PAGE_SIZE),...state];
     });
   }, [page, storesMessages]);
 
