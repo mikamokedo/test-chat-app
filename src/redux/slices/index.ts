@@ -10,14 +10,12 @@ export interface IMessage {
 
 export interface ChatState {
   messages:IMessage[];
-  input:string;
   userName:string;
 
 }
 
 const initialState: ChatState = {
   messages: [],
-  input:'',
   userName:''
 }
 
@@ -25,9 +23,6 @@ export const counterSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    updateInput:(state, action: PayloadAction<string>) => {
-      state.input= action.payload
-    },
     updateUserName:(state, action: PayloadAction<string>) => {
       state.userName= action.payload
     },
@@ -43,6 +38,6 @@ export const counterSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { updateInput,sendMessage,updateUserName,restoreMessage} = counterSlice.actions
+export const { sendMessage,updateUserName,restoreMessage} = counterSlice.actions
 
 export default counterSlice.reducer

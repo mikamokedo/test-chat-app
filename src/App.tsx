@@ -6,7 +6,6 @@ import JoinRoomModal from "./components/chat/JoinRoom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "./redux/store";
 import {
-  updateInput,
   sendMessage,
   updateUserName,
   restoreMessage,
@@ -24,13 +23,12 @@ function App() {
   const chatInner = useRef<HTMLDivElement>(null);
   const [isJoinRoom, setIsJoinRoom] = useState(false);
   const dispatch = useDispatch();
-  const input = useSelector((state: RootState) => state.chat.input);
+  const [input,setInput] = useState("");
   const userName = useSelector((state: RootState) => state.chat.userName);
   const storesMessages = useSelector((state: RootState) => state.chat.messages);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [showToBottom, setShowToBottom] = useState(false);
-
   const [currentMessages, setCurrentMessages] = useState<IMessage[]>([]);
 
   const handleSend = () => {
@@ -38,14 +36,14 @@ function App() {
       return;
     }
     dispatch(sendMessage({ text: input, name: userName, id: uuidv4() }));
-    dispatch(updateInput(""));
+   setInput("");
     setTimeout(() => {
       if (lassMessage.current) {
         lassMessage.current.scrollIntoView({
           behavior: "smooth",
         });
       }
-    }, 200);
+    }, 300);
   };
   const handleJoinRoom = (name: string) => {
     if (!name) {
@@ -59,23 +57,22 @@ function App() {
   useEffect(() => {
     const timer = setInterval(() => {
       const oldMessages = window.localStorage.getItem("messages");
-      if (oldMessages) {
-        const parseMess = JSON.parse(oldMessages);
-        const startIndex = parseMess.length - page * PAGE_SIZE;
-        setCurrentMessages(() => {
-          return parseMess.slice(Math.max(startIndex, 0));
-        });
+      const parseMess = JSON.parse(oldMessages ?? "");
+      if (parseMess) {
+          const startIndex = parseMess.length - page * PAGE_SIZE;
+          setCurrentMessages(() => {
+            return parseMess.slice(Math.max(startIndex, 0));
+          });
       }
     }, 200);
     return () => clearInterval(timer);
-  }, [dispatch, currentMessages]);
+  }, [dispatch,storesMessages,page]);
 
   useEffect(() => {
     const oldMessages = window.localStorage.getItem("messages");
-    if (oldMessages) {
-      const parseMess = JSON.parse(oldMessages);
+    const parseMess = JSON.parse(oldMessages ?? "");
+    if (parseMess) {
       const startIndex = parseMess.length - page * PAGE_SIZE;
-      if (Array.isArray(parseMess)) {
         dispatch(restoreMessage(parseMess));
         setCurrentMessages((state) => {
           return parseMess.slice(
@@ -83,25 +80,21 @@ function App() {
             startIndex + PAGE_SIZE
           );
         });
-      }
     }
   }, []);
 
   useEffect(() => {
-    if (lassMessage.current) {
-      lassMessage.current.scrollIntoView();
-    }
+    scrollToBottom();
   }, [isJoinRoom]);
 
   useEffect(() => {
     const handleScroll = async () => {
-      if (Math.ceil(storesMessages.length / PAGE_SIZE) > page && !isLoading) {
+      if (storesMessages.length / PAGE_SIZE > page && !isLoading) {
         setIsLoading(true);
         await delay();
         setIsLoading(false);
       }
     };
-
     if (chatInner.current) {
       chatInner.current.addEventListener("scroll", (e) => {
         if(!chatInner.current){
@@ -110,13 +103,11 @@ function App() {
         if (chatInner.current?.scrollTop === 0) {
           handleScroll();
         }
-        if(chatInner.current?.scrollTop < 400){
+        if(chatInner.current.scrollHeight - chatInner.current?.scrollTop > chatInner.current?.clientHeight + 400){
           setShowToBottom(true);
         }else{
           setShowToBottom(false);
-
         }
-
       });
     }
     return () => {
@@ -124,24 +115,18 @@ function App() {
         chatInner.current.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [isJoinRoom, page, isLoading]);
+  }, [isJoinRoom, page, isLoading,storesMessages]);
 
   useEffect(() => {
     if (isLoading) {
-      if (Math.ceil(storesMessages.length / PAGE_SIZE) > page) {
         setPage((state) => state + 1);
-      }
     }
   }, [isLoading]);
 
   useEffect(() => {
     const startIndex = storesMessages.length - page * PAGE_SIZE;
     setCurrentMessages((state) => {
-      const newMess = storesMessages.slice(
-        Math.max(startIndex, 0),
-        startIndex + PAGE_SIZE
-      );
-      return [...newMess, ...state];
+      return storesMessages.slice(Math.max(startIndex, 0));
     });
   }, [page]);
 
@@ -150,14 +135,14 @@ function App() {
     if (pressed && isJoinRoom) {
       handleSend();
     }
-  }, [pressed]);
+  }, [pressed,isJoinRoom]);
 
   const scrollToBottom = () => {
     if (lassMessage.current) {
       lassMessage.current.scrollIntoView();
     }
   };
-
+  
   return (
     <>
       {!isJoinRoom ? (
@@ -181,7 +166,7 @@ function App() {
           <div className="flex bg-indigo-500 p-[20px]">
             <Input
               value={input}
-              onChange={(value) => dispatch(updateInput(value))}
+              onChange={setInput}
             />
             <SendButton onSend={handleSend} />
           </div>
