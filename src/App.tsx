@@ -75,7 +75,7 @@ function App() {
         const startIndex = parseMess.length - page * PAGE_SIZE;
         dispatch(restoreMessage(parseMess))
         setCurrentMessages(() => {
-          return parseMess.slice(startIndex);
+          return parseMess.slice( Math.max(startIndex, 0));
         });
         if (!chatInner.current) {
           return;
@@ -146,8 +146,9 @@ function App() {
 
   useEffect(() => {
     const startIndex = storesMessages.length - page * PAGE_SIZE;
+    console.log(startIndex)
     setCurrentMessages((state) => {
-      return storesMessages.slice(startIndex)
+      return storesMessages.slice( Math.max(startIndex, 0))
     });
   }, [page, storesMessages]);
 
