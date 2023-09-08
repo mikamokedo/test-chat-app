@@ -117,7 +117,8 @@ function App() {
         if (!chatInner.current) {
           return;
         }
-        if (chatInner.current?.scrollTop <= 100) {
+
+        if (chatInner.current?.scrollTop < 50) {
           handleScroll();
         }
         if (
